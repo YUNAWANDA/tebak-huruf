@@ -60,6 +60,45 @@
         let levelSaatIni = 0;
         let jawaban = "";
 
+        // --- SISTEM PEMBUAT SUARA (AUDIO API) ---
+        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+
+        function mainkanSuara(tipe) {
+            if (audioCtx.state === 'suspended') {
+                audioCtx.resume();
+            }
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+            osc.connect(gain);
+            gain.connect(audioCtx.destination);
+
+            let waktu = audioCtx.currentTime;
+
+            if (tipe === 'klik') {
+                osc.frequency.setValueAtTime(400, waktu);
+                gain.gain.setValueAtTime(0.1, waktu);
+                osc.start(waktu);
+                osc.stop(waktu + 0.05);
+            } else if (tipe === 'benar') {
+                // Suara nada naik (jingle sukses)
+                osc.frequency.setValueAtTime(300, waktu);
+                osc.frequency.setValueAtTime(500, waktu + 0.1);
+                osc.frequency.setValueAtTime(700, waktu + 0.2);
+                gain.gain.setValueAtTime(0.2, waktu);
+                osc.start(waktu);
+                osc.stop(waktu + 0.3);
+            } else if (tipe === 'salah') {
+                // Suara nada turun (gagal)
+                osc.type = 'sawtooth';
+                osc.frequency.setValueAtTime(200, waktu);
+                osc.frequency.setValueAtTime(130, waktu + 0.15);
+                gain.gain.setValueAtTime(0.2, waktu);
+                osc.start(waktu);
+                osc.stop(waktu + 0.3);
+            }
+        }
+        // ----------------------------------------
+
         function muatLevel() {
             const dataLevel = daftarLevel[levelSaatIni];
             jawaban = dataLevel.huruf[Math.floor(Math.random() * dataLevel.huruf.length)];
@@ -74,12 +113,14 @@
         }
 
         function cekJawaban() {
+            mainkanSuara('klik');
             let tebakan = document.getElementById("tebakan").value.toUpperCase();
             let hasil = document.getElementById("hasil");
 
             if (tebakan === "") {
                 hasil.innerText = "⚠️ Masukkan satu huruf!";
             } else if (tebakan === jawaban) {
+                mainkanSuara('benar');
                 if (levelSaatIni < daftarLevel.length - 1) {
                     hasil.innerText = "🎉 Selamat! Tebakan benar. Klik 'Lanjut Level'!";
                     document.getElementById("btnLanjut").style.display = "inline";
@@ -91,11 +132,13 @@
                 document.getElementById("tebakan").disabled = true;
                 document.getElementById("btnTebak").style.display = "none";
             } else {
+                mainkanSuara('salah');
                 hasil.innerText = "❌ Salah, coba lagi.";
             }
         }
 
         function lanjutLevel() {
+            mainkanSuara('klik');
             if (levelSaatIni < daftarLevel.length - 1) {
                 levelSaatIni++;
             } else {
@@ -105,7 +148,6 @@
             muatLevel();
         }
 
-        // Pastikan dijalankan setelah elemen HTML termuat
         window.onload = function() {
             muatLevel();
         };
