@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Game Tebak Huruf</title>
+    <title>Game Tebak Huruf Berlevel</title>
 </head>
 <body>
     <img src="1.jpeg" alt="Logo RPL" width="150">
@@ -13,29 +13,79 @@
     <img src="5.jpeg" alt="Logo Yuna" width="150">
 
     <h1>🎮 Game Tebak Huruf</h1>
-    <p>Tebak huruf dari A sampai G</p>
+    
+    <!-- Informasi Level -->
+    <h2 id="infoLevel">Level 1</h2>
+    <p id="petunjuk">Tebak huruf dari A sampai C</p>
 
     <input type="text" id="tebakan" maxlength="1" placeholder="Masukkan huruf">
-    <button onclick="cekJawaban()">Tebak</button>
+    <button id="btnTebak" onclick="cekJawaban()">Tebak</button>
+    <button id="btnLanjut" onclick="lanjutLevel()" style="display: none;">Lanjut Level</button>
 
     <p id="hasil"></p>
 
     <script>
-        const huruf = ["A", "B", "C", "D", "E", "F", "G"];
-        const jawaban = huruf[Math.floor(Math.random() * huruf.length)];
+        // Konfigurasi level
+        const daftarLevel = [
+            { level: 1, huruf: ["A", "B", "C"], petunjuk: "Tebak huruf dari A sampai C" },
+            { level: 2, huruf: ["A", "B", "C", "D", "E", "F", "G"], petunjuk: "Tebak huruf dari A sampai G" },
+            { level: 3, huruf: ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M"], petunjuk: "Tebak huruf dari A sampai M" }
+        ];
 
+        let levelSaatIni = 0;
+        let jawaban = "";
+
+        // Fungsi untuk memulai/mengatur level
+        function muatLevel() {
+            const dataLevel = daftarLevel[levelSaatIni];
+            jawaban = dataLevel.huruf[Math.floor(Math.random() * dataLevel.huruf.length)];
+            
+            document.getElementById("infoLevel").innerText = "Level " + dataLevel.level;
+            document.getElementById("petunjuk").innerText = dataLevel.petunjuk;
+            document.getElementById("tebakan").value = "";
+            document.getElementById("tebakan").disabled = false;
+            document.getElementById("btnTebak").style.display = "inline";
+            document.getElementById("btnLanjut").style.display = "none";
+            document.getElementById("hasil").innerText = "";
+        }
+
+        // Fungsi mengecek jawaban pemain
         function cekJawaban() {
             let tebakan = document.getElementById("tebakan").value.toUpperCase();
             let hasil = document.getElementById("hasil");
 
             if (tebakan === "") {
-                hasil.innerHTML = "Masukkan satu huruf!";
+                hasil.innerText = "⚠️ Masukkan satu huruf!";
             } else if (tebakan === jawaban) {
-                hasil.innerHTML = "🎉 Selamat! Tebakan kamu benar.";
+                if (levelSaatIni < daftarLevel.length - 1) {
+                    hasil.innerText = "🎉 Selamat! Tebakan kamu benar. Klik 'Lanjut Level' untuk ke level berikutnya!";
+                    document.getElementById("btnLanjut").style.display = "inline";
+                } else {
+                    hasil.innerText = "🏆 SELAMAT! Kamu berhasil menyelesaikan SEMUA LEVEL!";
+                    document.getElementById("btnLanjut").innerText = "Main Lagi dari Awal";
+                    document.getElementById("btnLanjut").style.display = "inline";
+                }
+                document.getElementById("tebakan").disabled = true;
+                document.getElementById("btnTebak").style.display = "none";
             } else {
-                hasil.innerHTML = "❌ Salah, coba lagi.";
+                hasil.innerText = "❌ Salah, coba lagi.";
             }
         }
+
+        // Fungsi berpindah ke level berikutnya
+        function lanjutLevel() {
+            if (levelSaatIni < daftarLevel.length - 1) {
+                levelSaatIni++;
+            } else {
+                // Reset ke level 1 jika sudah tamat
+                levelSaatIni = 0;
+                document.getElementById("btnLanjut").innerText = "Lanjut Level";
+            }
+            muatLevel();
+        }
+
+        // Jalankan game pertama kali
+        muatLevel();
     </script>
 </body>
 </html>
