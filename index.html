@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Game Tebak Huruf</title>
+</head>
+<body>
+    <h1>🎮 Game Tebak Huruf</h1>
+    <p>Tebak huruf dari A sampai G</p>
+
+    <input type="text" id="tebakan" maxlength="1" placeholder="Masukkan huruf">
+    <button onclick="cekJawaban()">Tebak</button>
+
+    <p id="hasil"></p>
+
+    <script>
+        const huruf = ["A", "B", "C", "D", "E", "F", "G"];
+        const jawaban = huruf[Math.floor(Math.random() * huruf.length)];
+
+        function cekJawaban() {
+            let tebakan = document.getElementById("tebakan").value.toUpperCase();
+            let hasil = document.getElementById("hasil");
+
+            if (tebakan === "") {
+                hasil.innerHTML = "Masukkan satu huruf!";
+            } else if (tebakan === jawaban) {
+                hasil.innerHTML = "🎉 Selamat! Tebakan kamu benar.";
+            } else {
+                hasil.innerHTML = "❌ Salah, coba lagi.";
+            }
+        }
+    </script>
+</body>
+</html>
