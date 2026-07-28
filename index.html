@@ -4,13 +4,39 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Game Tebak Huruf Berlevel</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin-top: 20px;
+        }
+        img {
+            margin: 5px;
+        }
+        #infoLevel {
+            color: #d9534f;
+            font-size: 24px;
+            margin-bottom: 5px;
+        }
+        #petunjuk {
+            font-size: 18px;
+            color: #333;
+        }
+        #hasil {
+            font-weight: bold;
+            font-size: 18px;
+            margin-top: 15px;
+        }
+    </style>
 </head>
 <body>
-    <img src="1.jpeg" alt="Logo RPL" width="150">
-    <img src="2.jpeg" alt="Logo Onesandvoscho" width="150">
-    <img src="3.jpeg" alt="Logo Moko" width="150">
-    <img src="4.jpeg" alt="Logo SMKN 1 Sanden" width="150">
-    <img src="5.jpeg" alt="Logo Yuna" width="150">
+    <div>
+        <img src="1.jpeg" alt="Logo RPL" width="100">
+        <img src="2.jpeg" alt="Logo Onesandvoscho" width="100">
+        <img src="3.jpeg" alt="Logo Moko" width="100">
+        <img src="4.jpeg" alt="Logo SMKN 1 Sanden" width="100">
+        <img src="5.jpeg" alt="Logo Yuna" width="100">
+    </div>
 
     <h1>🎮 Game Tebak Huruf</h1>
     
@@ -18,14 +44,13 @@
     <h2 id="infoLevel">Level 1</h2>
     <p id="petunjuk">Tebak huruf dari A sampai C</p>
 
-    <input type="text" id="tebakan" maxlength="1" placeholder="Masukkan huruf">
-    <button id="btnTebak" onclick="cekJawaban()">Tebak</button>
-    <button id="btnLanjut" onclick="lanjutLevel()" style="display: none;">Lanjut Level</button>
+    <input type="text" id="tebakan" maxlength="1" placeholder="Masukkan huruf" style="padding: 5px; font-size: 16px;">
+    <button id="btnTebak" onclick="cekJawaban()" style="padding: 6px 12px; font-size: 16px;">Tebak</button>
+    <button id="btnLanjut" onclick="lanjutLevel()" style="display: none; padding: 6px 12px; font-size: 16px; background-color: #5cb85c; color: white; border: none;">Lanjut Level</button>
 
     <p id="hasil"></p>
 
     <script>
-        // Konfigurasi level
         const daftarLevel = [
             { level: 1, huruf: ["A", "B", "C"], petunjuk: "Tebak huruf dari A sampai C" },
             { level: 2, huruf: ["A", "B", "C", "D", "E", "F", "G"], petunjuk: "Tebak huruf dari A sampai G" },
@@ -35,7 +60,6 @@
         let levelSaatIni = 0;
         let jawaban = "";
 
-        // Fungsi untuk memulai/mengatur level
         function muatLevel() {
             const dataLevel = daftarLevel[levelSaatIni];
             jawaban = dataLevel.huruf[Math.floor(Math.random() * dataLevel.huruf.length)];
@@ -49,7 +73,6 @@
             document.getElementById("hasil").innerText = "";
         }
 
-        // Fungsi mengecek jawaban pemain
         function cekJawaban() {
             let tebakan = document.getElementById("tebakan").value.toUpperCase();
             let hasil = document.getElementById("hasil");
@@ -58,10 +81,10 @@
                 hasil.innerText = "⚠️ Masukkan satu huruf!";
             } else if (tebakan === jawaban) {
                 if (levelSaatIni < daftarLevel.length - 1) {
-                    hasil.innerText = "🎉 Selamat! Tebakan kamu benar. Klik 'Lanjut Level' untuk ke level berikutnya!";
+                    hasil.innerText = "🎉 Selamat! Tebakan benar. Klik 'Lanjut Level'!";
                     document.getElementById("btnLanjut").style.display = "inline";
                 } else {
-                    hasil.innerText = "🏆 SELAMAT! Kamu berhasil menyelesaikan SEMUA LEVEL!";
+                    hasil.innerText = "🏆 SELAMAT! Kamu menamatkan semua level!";
                     document.getElementById("btnLanjut").innerText = "Main Lagi dari Awal";
                     document.getElementById("btnLanjut").style.display = "inline";
                 }
@@ -72,20 +95,20 @@
             }
         }
 
-        // Fungsi berpindah ke level berikutnya
         function lanjutLevel() {
             if (levelSaatIni < daftarLevel.length - 1) {
                 levelSaatIni++;
             } else {
-                // Reset ke level 1 jika sudah tamat
                 levelSaatIni = 0;
                 document.getElementById("btnLanjut").innerText = "Lanjut Level";
             }
             muatLevel();
         }
 
-        // Jalankan game pertama kali
-        muatLevel();
+        // Pastikan dijalankan setelah elemen HTML termuat
+        window.onload = function() {
+            muatLevel();
+        };
     </script>
 </body>
 </html>
